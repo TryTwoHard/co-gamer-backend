@@ -1,6 +1,9 @@
-﻿namespace Contracts.Common.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
 
-public interface IUnitOfWork
+namespace Contracts.Common.Interfaces;
+
+public interface IUnitOfWork<TContext>
+    where TContext : DbContext
 {
-    
+    public Task<int> CommitAsync();
 }

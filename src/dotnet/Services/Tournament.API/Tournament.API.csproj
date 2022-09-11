@@ -14,4 +14,8 @@
       <Folder Include="Controllers" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\BuildingBlocks\Contracts\Contracts.csproj" />
+    </ItemGroup>
+
 </Project>
