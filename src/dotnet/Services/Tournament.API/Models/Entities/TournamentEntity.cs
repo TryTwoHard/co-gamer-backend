@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Contracts.Domains;
-using Tournament.API.Models.Enums;
+using Contracts.Domains.Implementations;
 
 namespace Tournament.API.Models.Entities;
 
@@ -27,5 +27,5 @@ internal class TournamentEntity : EntityBase<Guid>
     [MaxLength(500)]
     public string CancelReason { get; set; }
 
-    public TournamentStatus Status { get; set; }
+    // public TournamentStatus Status { get; set; }
 }
