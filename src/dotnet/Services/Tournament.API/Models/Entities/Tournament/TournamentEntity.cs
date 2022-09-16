@@ -1,19 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Contracts.Domains;
 using Contracts.Domains.Implementations;
+using Tournament.API.Models.Statuses;
 
-namespace Tournament.API.Models.Entities;
+namespace Tournament.API.Models.Entities.Tournament;
 
-internal class TournamentEntity : EntityBase<Guid>
+public class TournamentEntity : EntityBase<Guid>
 {
-    [Key]
-    public Guid Id { get; set; }
-
     [MaxLength(100)]
     public string Name { get; set; }
     
     public DateTimeOffset CreateTime { get; set; }
+    public DateTimeOffset BeginTime { get; set; }
 
     public DateTimeOffset EndTime { get; set; }
 
@@ -27,5 +24,5 @@ internal class TournamentEntity : EntityBase<Guid>
     [MaxLength(500)]
     public string CancelReason { get; set; }
 
-    // public TournamentStatus Status { get; set; }
+    public TournamentStatus Status { get; set; }
 }

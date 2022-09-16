@@ -1,25 +1,32 @@
+using Serilog;
+using Tournament.API.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateLogger();
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+try
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    builder.Services.AddInfrastructure(builder.Configuration);
+    var app = builder.Build();
+    app.UseInfrastructure();
+    app.Run();
+}
+catch (Exception ex)
+{
+    var error = ex.GetType().Name;
+    if (error.Equals("StopTheHostException", StringComparison.Ordinal))
+    {
+        throw;
+    }
+    
+    Log.Fatal($"Unhandled exception: {ex}");
+}
+finally
+{
+    Log.Information($"Shut down {builder.Environment.ApplicationName} complete");
+    Log.CloseAndFlush();
 }
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();

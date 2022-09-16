@@ -2,7 +2,12 @@
 
 namespace Contracts.Common.Interfaces;
 
-public interface IUnitOfWork<TContext>
+public interface IUnitOfWork : IDisposable
+{
+    
+}
+
+public interface IUnitOfWork<TContext> : IUnitOfWork
     where TContext : DbContext
 {
     public Task<int> CommitAsync();
