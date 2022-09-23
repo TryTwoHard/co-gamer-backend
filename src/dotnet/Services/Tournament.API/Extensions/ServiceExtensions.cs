@@ -1,4 +1,5 @@
-﻿using Contracts.Common.Interfaces;
+﻿using System.Reflection;
+using Contracts.Common.Interfaces;
 using Infrastructure.Common;
 using Infrastructure.Common.Repository;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -22,7 +23,13 @@ public static class ServiceExtensions
         });
         services.AddControllers();
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(gen =>
+        {
+            var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
+
+            gen.IncludeXmlComments(xmlCommentsFullPath);
+        });
         services.ConfigureTournamentDbContext(configuration);
         services.ConfigureApiVersioning();
         services.AddAutoMapper(config =>

@@ -1,8 +1,8 @@
 ﻿using Tournament.API.Models.Entities.Tournament;
 
-namespace Tournament.API.Models.DTOs;
+namespace Tournament.API.Controllers.Payloads.Requests;
 
-public class TournamentCreationDTO
+public class DraftTournamentRequest
 {
     public string Name { get; set; }
 

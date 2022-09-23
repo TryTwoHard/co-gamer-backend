@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using Contracts.Domains.Implementations;
+using Microsoft.DotNet.PlatformAbstractions;
 using Tournament.API.Models.Statuses;
 
 namespace Tournament.API.Models.Entities.Tournament;
@@ -23,6 +25,14 @@ public class TournamentEntity : EntityBase<Guid>
 
     [MaxLength(500)]
     public string CancelReason { get; set; }
-
     public TournamentStatus Status { get; set; }
+    public override bool Equals(object? obj)
+    {
+        return base.Equals(obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return Tuple.Create(Id, Name, CreateTime, BeginTime, EndTime, GameCategory, CompetitionFormat).GetHashCode();
+    }
 }

@@ -13,7 +13,6 @@ public class TournamentRepository : RepositoryBase<TournamentEntity, Guid, Tourn
     {
     }
 
-
     public async Task<IEnumerable<TournamentEntity>> GetTournamentsAsync() => await GetAll().ToListAsync();
 
     public Task<TournamentEntity?> GetTournamentByIdAsync(Guid id) => GetByIdAsync(id);
@@ -25,9 +24,6 @@ public class TournamentRepository : RepositoryBase<TournamentEntity, Guid, Tourn
     public async Task DeleteTournamentAsync(Guid id)
     {
         var tournament = await GetTournamentByIdAsync(id);
-        if (tournament is not null)
-        {
-            await DeleteAsync(tournament);
-        }
+        await DeleteAsync(tournament!);
     }
 }

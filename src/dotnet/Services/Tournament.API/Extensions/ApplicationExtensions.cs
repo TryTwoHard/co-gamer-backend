@@ -1,4 +1,6 @@
-﻿namespace Tournament.API.Extensions;
+﻿using Tournament.API.Middleware;
+
+namespace Tournament.API.Extensions;
 
 public static class ApplicationExtensions
 {
@@ -11,9 +13,11 @@ public static class ApplicationExtensions
             app.UseSwaggerUI();
         }
 
-        app.UseHttpsRedirection();
+        app.UseExceptionHandler("/error");
+        // app.UseMiddleware<ExceptionMiddleware>();
+        // app.UseHttpsRedirection();
 
-        app.UseAuthorization();
+        // app.UseAuthorization();
 
         app.MapControllers();
     }

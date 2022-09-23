@@ -90,5 +90,5 @@ public class RepositoryBase<T, TKey, TContext> : RepositoryQueryBase<T, TKey, TC
     }
 
     public Task<int> SaveChangesAsync()
-        => _unitOfWork.CommitAsync();   
+        => _unitOfWork.CommitAsync();
 }
