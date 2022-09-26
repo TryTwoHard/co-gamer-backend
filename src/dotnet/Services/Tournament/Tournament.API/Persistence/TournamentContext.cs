@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Tournament.API.Models.Entities.Tournament;
+using Tournament.API.Models.Entities;
 
 namespace Tournament.API.Persistence;
 

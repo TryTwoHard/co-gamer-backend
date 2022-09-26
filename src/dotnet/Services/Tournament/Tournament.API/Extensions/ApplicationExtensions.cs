@@ -1,6 +1,4 @@
-﻿using Tournament.API.Middleware;
-
-namespace Tournament.API.Extensions;
+﻿namespace Tournament.API.Extensions;
 
 public static class ApplicationExtensions
 {

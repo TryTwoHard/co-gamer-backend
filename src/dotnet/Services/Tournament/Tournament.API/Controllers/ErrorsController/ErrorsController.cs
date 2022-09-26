@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Tournament.API.Exceptions;
 
-namespace Tournament.API.Controllers;
+namespace Tournament.API.Controllers.ErrorsController;
 
 /// <summary>
 /// 
@@ -23,9 +23,17 @@ public class ErrorsController : ControllerBase
         {
             statusCode = 404;
         }
+        else if (exception is TournamentInvalidException)
+        {
+            statusCode = 400;
+        }
+        else if (exception is BadHttpRequestException)
+        {
+            statusCode = 400;
+        }
         else
         {
-            statusCode = 403;
+            statusCode = 500;
         }
         return Problem(statusCode: statusCode, detail: exception.Message);
     }

@@ -1,7 +1,10 @@
-﻿using Contracts.Common.Interfaces;
+﻿using System.Linq.Expressions;
+using Ardalis.Specification;
+using Contracts.Common.Interfaces;
 using Infrastructure.Common.Repository;
 using Microsoft.EntityFrameworkCore;
-using Tournament.API.Models.Entities.Tournament;
+using Tournament.API.Extensions;
+using Tournament.API.Models.Entities;
 using Tournament.API.Persistence;
 using Tournament.API.Repositories.Interfaces;
 
@@ -13,7 +16,15 @@ public class TournamentRepository : RepositoryBase<TournamentEntity, Guid, Tourn
     {
     }
 
-    public async Task<IEnumerable<TournamentEntity>> GetTournamentsAsync() => await GetAll().ToListAsync();
+    public async Task<IEnumerable<TournamentEntity>> GetTournamentsAsync(ISpecification<TournamentEntity> specification)
+    {
+        var list = GetAll();
+        foreach (var expression in specification.WhereExpressions)
+        {
+            list = list.Where(expression.Filter);
+        }
+        return await list.ToListAsyncSafe();
+    } 
 
     public Task<TournamentEntity?> GetTournamentByIdAsync(Guid id) => GetByIdAsync(id);
 

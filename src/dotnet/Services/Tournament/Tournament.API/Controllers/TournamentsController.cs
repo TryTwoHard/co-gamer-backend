@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Tournament.API.Controllers.Payloads.Requests;
-using Tournament.API.Services.Interfaces.Tournament;
+using Tournament.API.Controllers.Payloads;
+using Tournament.API.Services.Interfaces;
 
 namespace Tournament.API.Controllers;
 
@@ -30,11 +30,6 @@ public class TournamentsController : ControllerBase
     {
         var tournament = await _service.GetTournamentById(id);
 
-        // if (tournament is null)
-        // {
-        //     return NotFound();
-        // }
-
         return Ok(tournament);
     }
 
@@ -43,14 +38,15 @@ public class TournamentsController : ControllerBase
     /// </summary>
     /// <returns>An IActionResult representing a list of tournaments</returns>
     [HttpGet("get-public")]
-    public async Task<IActionResult> GetPublicTournaments()
-        // int? pageIndex, 
-        // int? pageSize, 
-        // int? hostId, 
-        // int? game
+    public async Task<IActionResult> GetPublicTournaments(
+        int? pageIndex, 
+        int? pageSize,
+        int? status,
+        Guid? hostId, 
+        Guid? gameId)
     {
-        var tournaments = await _service.GetTournaments();
-        return Ok(tournaments);
+        var response = await _service.GetTournaments(pageIndex, pageSize, status, hostId, gameId);
+        return Ok(response);
     }
 
     /// <summary>
@@ -112,12 +108,6 @@ public class TournamentsController : ControllerBase
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateTournament(Guid id, UpdateTournamentRequest updatedTournament)
     {
-        // var tournamentEntity = await _service.GetTournamentById(id);
-        // if (tournamentEntity is null)
-        // {
-        //     return NotFound();
-        // }
-        
         var tournamentToReturn = await _service.UpdateTournament(id, updatedTournament);
         return Ok(tournamentToReturn);
     }
@@ -131,12 +121,6 @@ public class TournamentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> CancelTournament(Guid id)
     {
-        // var tournamentEntity = await _service.GetTournamentById(id);
-        // if (tournamentEntity is null)
-        // {
-        //     return NotFound();
-        // }
-
         var canceledTournament= await _service.CancelTournament(id);
         return Ok(canceledTournament);
     }

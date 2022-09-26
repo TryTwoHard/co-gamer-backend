@@ -1,6 +1,6 @@
-﻿using Tournament.API.Models.Entities.Tournament;
+﻿using Tournament.API.Models.Entities;
 
-namespace Tournament.API.Controllers.Payloads.Requests;
+namespace Tournament.API.Controllers.Payloads;
 
 public class DraftTournamentRequest
 {

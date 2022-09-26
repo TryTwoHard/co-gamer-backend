@@ -1,11 +1,10 @@
 ﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 
-namespace Tournament.API.Errors;
+namespace Tournament.API.Controllers.ErrorsController;
 
 internal sealed class TournamentProblemDetailsFactory : ProblemDetailsFactory
 {

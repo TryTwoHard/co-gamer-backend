@@ -4,6 +4,5 @@ public class TournamentNotFoundException : Exception
 {
     public TournamentNotFoundException(string message) : base(message)
     {
-        
     }
 }

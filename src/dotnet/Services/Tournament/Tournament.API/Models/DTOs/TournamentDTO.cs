@@ -1,4 +1,4 @@
-﻿using Tournament.API.Models.Entities.Tournament;
+﻿using Tournament.API.Models.Entities;
 using Tournament.API.Models.Statuses;
 
 namespace Tournament.API.Models.DTOs;

@@ -2,20 +2,26 @@
 using Contracts.Common.Interfaces;
 using Infrastructure.Common;
 using Infrastructure.Common.Repository;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.EntityFrameworkCore;
+using MySql.Data.MySqlClient;
+using MySql.EntityFrameworkCore.Infrastructure;
+using Shared.Configurations;
+using Tournament.API.Controllers.ErrorsController;
 using Tournament.API.Persistence;
 using Tournament.API.Profiles;
 using Tournament.API.Repositories.Implementations;
 using Tournament.API.Repositories.Interfaces;
-using Tournament.API.Services.Implementations.Tournament;
-using Tournament.API.Services.Interfaces.Tournament;
+using Tournament.API.Services.Implementations;
+using Tournament.API.Services.Interfaces;
 
 namespace Tournament.API.Extensions;
 
 public static class ServiceExtensions
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
-    {
+    {   
         services.AddVersionedApiExplorer(setup =>
         {
             setup.GroupNameFormat = "'v'VVV";
@@ -46,12 +52,26 @@ public static class ServiceExtensions
         services.AddScoped(typeof(IRepositoryBase<,,>), typeof(RepositoryBase<,,>))
             .AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>))
             .AddScoped<ITournamentRepository, TournamentRepository>()
-            .AddScoped<ITournamentService, TournamentService>();
+            .AddScoped<ITournamentService, TournamentService>()
+            .AddTransient<ProblemDetailsFactory, TournamentProblemDetailsFactory>();
     }
 
-    private static void ConfigureTournamentDbContext(this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection ConfigureTournamentDbContext(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<TournamentContext>();
+        var databaseSettings = configuration.GetSection(nameof(DatabaseSettings)).Get<DatabaseSettings>();
+        if (databaseSettings == null || string.IsNullOrEmpty(databaseSettings.ConnectionString))
+            throw new ArgumentNullException("Connection string is not configured.");
+        
+        var builder = new MySqlConnectionStringBuilder(databaseSettings.ConnectionString);
+        services.AddDbContext<TournamentContext>(m => m.UseMySql(builder.ConnectionString, 
+            ServerVersion.AutoDetect(builder.ConnectionString)));
+            // , e =>
+            // {
+            //     e.MigrationsAssembly("Product.API");
+            //     e.SchemaBehavior(MySqlSchemaBehavior.Ignore);
+            // }));
+
+        return services;
     }
 
     private static void ConfigureApiVersioning(this IServiceCollection services)

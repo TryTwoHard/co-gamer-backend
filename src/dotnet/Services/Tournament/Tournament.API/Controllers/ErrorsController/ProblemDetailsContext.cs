@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Tournament.API.Errors;
+namespace Tournament.API.Controllers.ErrorsController;
 
 public class ProblemDetailsContext
 {

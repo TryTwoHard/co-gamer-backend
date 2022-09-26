@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Tournament.API.Controllers.Payloads.Requests;
+using Tournament.API.Controllers.Payloads;
 using Tournament.API.Models.DTOs;
-using Tournament.API.Models.Entities.Tournament;
+using Tournament.API.Models.Entities;
 using Tournament.API.Models.Statuses;
 
 namespace Tournament.API.Profiles;

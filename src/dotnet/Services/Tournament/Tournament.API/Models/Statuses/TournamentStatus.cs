@@ -4,5 +4,5 @@ public enum TournamentStatus
 {
     Draft,
     Publish,
-    Canceled
+    Cancel
 }

@@ -1,4 +1,4 @@
-﻿namespace Tournament.API.Errors;
+﻿namespace Tournament.API.Controllers.ErrorsController;
 
 public class ProblemDetailsOptions
 {

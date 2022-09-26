@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Reflection;
+using System.ComponentModel.DataAnnotations.Schema;
 using Contracts.Domains.Implementations;
-using Microsoft.DotNet.PlatformAbstractions;
 using Tournament.API.Models.Statuses;
 
-namespace Tournament.API.Models.Entities.Tournament;
+namespace Tournament.API.Models.Entities;
 
 public class TournamentEntity : EntityBase<Guid>
 {
+    [ForeignKey("host_id")]
+    public Guid HostId { get; set; }
     [MaxLength(100)]
     public string Name { get; set; }
     
@@ -16,7 +17,7 @@ public class TournamentEntity : EntityBase<Guid>
 
     public DateTimeOffset EndTime { get; set; }
 
-    public GameCategory GameCategory { get; set; }
+    public GameCategory? GameCategory { get; set; }
 
     public CompetitionFormat CompetitionFormat { get; set; }
 
@@ -24,7 +25,7 @@ public class TournamentEntity : EntityBase<Guid>
     public string Description { get; set; }
 
     [MaxLength(500)]
-    public string CancelReason { get; set; }
+    public string? CancelReason { get; set; }
     public TournamentStatus Status { get; set; }
     public override bool Equals(object? obj)
     {
