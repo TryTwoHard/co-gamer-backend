@@ -71,6 +71,7 @@ public class TournamentService : ITournamentService
         }
         
         var tournamentEntity = _mapper.Map<TournamentEntity>(tournamentRequest);
+        tournamentEntity.Id = id;
         await _repository.UpdateTournamentAsync(tournamentEntity);
         await _repository.SaveChangesAsync();
 

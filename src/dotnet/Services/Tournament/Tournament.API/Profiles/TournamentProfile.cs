@@ -12,6 +12,7 @@ public class TournamentProfile : Profile
     {
         CreateMap<TournamentEntity, TournamentDTO>();
         CreateMap<TournamentDTO, TournamentEntity>();
+        CreateMap<UpdateTournamentRequest, TournamentEntity>();
         CreateMap<DraftTournamentRequest, TournamentDTO>()
             .BeforeMap((src, dest) => dest.Status = TournamentStatus.Draft)
             .BeforeMap((src, dest) => dest.CreateTime = DateTimeOffset.Now);
