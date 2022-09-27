@@ -12,9 +12,24 @@ public class TournamentFilterPaginatedSpecification : Specification<TournamentEn
         {
             take = int.MaxValue;
         }
+        
+        var now = DateTimeOffset.UtcNow;
 
-        Query.Where(x => x.GetStatusIndex().Equals(status) &&
-                         (hostId == x.HostId || !hostId.HasValue) &&
+        if (status == 1)
+        {
+            Query.Where(x => x.BeginTime > now);
+        }
+        else if (status == -1)
+        {
+            Query.Where(x => x.EndTime < now);
+        }
+        else if (status == 0)
+        {
+            Query.Where(x => x.BeginTime <= now && x.EndTime >= now);
+        }
+        
+
+        Query.Where(x => (hostId == x.HostId || !hostId.HasValue) &&
                          (gameId == x.GameCategory.Id || !gameId.HasValue))
             .Skip(skip)
             .Take(take);

@@ -26,7 +26,8 @@ public class TournamentService : ITournamentService
         var response = new Page<TournamentDTO>(pageSize);
         pageIndex ??= 0;
         pageSize ??= 0;
-        // status: -1 - Past,  0 - Current, 1 - Future, default: 0
+        status ??= 0;
+        // status: -1 - Past,  0 - Current, 1 - Future, 2 - All, default: 0
         var pagedSpec = new TournamentFilterPaginatedSpecification(
             skip: pageIndex.Value * pageSize.Value,
             take: pageSize.Value,
