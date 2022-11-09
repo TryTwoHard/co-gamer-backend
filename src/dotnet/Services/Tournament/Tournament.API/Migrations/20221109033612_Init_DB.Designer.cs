@@ -11,8 +11,8 @@ using Tournament.API.Persistence;
 namespace Tournament.API.Migrations
 {
     [DbContext(typeof(TournamentContext))]
-    [Migration("20220926141356_Init_Tournament DB")]
-    partial class Init_TournamentDB
+    [Migration("20221109033612_Init_DB")]
+    partial class Init_DB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,7 +21,7 @@ namespace Tournament.API.Migrations
                 .HasAnnotation("ProductVersion", "6.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("Tournament.API.Models.Entities.Tournament.CompetitionFormat", b =>
+            modelBuilder.Entity("Tournament.API.Models.Entities.CompetitionFormat", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -32,7 +32,7 @@ namespace Tournament.API.Migrations
                     b.ToTable("CompetitionFormat");
                 });
 
-            modelBuilder.Entity("Tournament.API.Models.Entities.Tournament.GameCategory", b =>
+            modelBuilder.Entity("Tournament.API.Models.Entities.GameCategory", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -43,7 +43,7 @@ namespace Tournament.API.Migrations
                     b.ToTable("GameCategory");
                 });
 
-            modelBuilder.Entity("Tournament.API.Models.Entities.Tournament.TournamentEntity", b =>
+            modelBuilder.Entity("Tournament.API.Models.Entities.TournamentEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -93,15 +93,15 @@ namespace Tournament.API.Migrations
                     b.ToTable("Tournaments");
                 });
 
-            modelBuilder.Entity("Tournament.API.Models.Entities.Tournament.TournamentEntity", b =>
+            modelBuilder.Entity("Tournament.API.Models.Entities.TournamentEntity", b =>
                 {
-                    b.HasOne("Tournament.API.Models.Entities.Tournament.CompetitionFormat", "CompetitionFormat")
+                    b.HasOne("Tournament.API.Models.Entities.CompetitionFormat", "CompetitionFormat")
                         .WithMany()
                         .HasForeignKey("CompetitionFormatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Tournament.API.Models.Entities.Tournament.GameCategory", "GameCategory")
+                    b.HasOne("Tournament.API.Models.Entities.GameCategory", "GameCategory")
                         .WithMany()
                         .HasForeignKey("GameCategoryId");
 

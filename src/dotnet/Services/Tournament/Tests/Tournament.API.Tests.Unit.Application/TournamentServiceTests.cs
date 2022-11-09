@@ -6,13 +6,13 @@ using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using NSubstitute.ReturnsExtensions;
 using Tournament.API.Controllers.Payloads;
+using Tournament.API.Controllers.Tournaments;
 using Tournament.API.Exceptions;
 using Tournament.API.Models.DTOs;
 using Tournament.API.Models.Entities;
 using Tournament.API.Models.Statuses;
 using Tournament.API.Repositories.Interfaces;
 using Tournament.API.Services.Implementations;
-using Tournament.API.Specifications;
 
 namespace Tournament.API.Tests.Unit.Application;
 
@@ -32,29 +32,21 @@ public class TournamentServiceTests
     public async Task GetTournaments_ShouldReturnEmptyList_WhenNoTournamentsExist()
     {
         // Arrange
-        var pageIndex = 1;
-        var pageSize = 20;
-        var status = 0;
-        var hostId = Guid.NewGuid();
-        var gameId = Guid.NewGuid();
-        var spec = new TournamentFilterPaginatedSpecification(
-            skip: pageIndex * pageSize,
-            take: pageSize,
-            status: status,
-            hostId: hostId,
-            gameId: gameId
-            );
-        var expectedResponse = new Page<TournamentDTO>(pageSize)
+        var tournaments = Enumerable.Empty<TournamentEntity>().AsQueryable();
+        _repository.GetTournamentsAsync().Returns(tournaments);
+        var parameters = new TournamentQueryParameters()
         {
-            Content = new List<TournamentDTO>()
-        };
-        _repository.GetTournamentsAsync(spec).Returns(Enumerable.Empty<TournamentEntity>());
 
+        };
+        var expected = new List<TournamentDTO>();
+        _mapper.Map<List<TournamentDTO>>(tournaments.ToList()).Returns(expected);
+        var page = new Page<TournamentEntity>(expected.Count) {Content = tournaments.ToList()};
+        
         // Act
-        var result = await _sut.GetTournaments(pageIndex, pageSize, status, hostId, gameId);
+        var result = await _sut.GetTournaments(parameters);
 
         // Assert
-        result.Should().BeEquivalentTo(expectedResponse);
+        result.Should().BeEquivalentTo(page);
     }
 
     [Fact]
@@ -157,7 +149,7 @@ public class TournamentServiceTests
         // Assert
         result.Should().BeEquivalentTo(expectedTournament);
     }
-    
+
     [Fact]
     public async Task CancelTournament_ShouldThrowBadRequestException_WhenThatTournamentExistsAndWasNotPublished()
     {
@@ -207,7 +199,7 @@ public class TournamentServiceTests
         // Assert
         result.Should().BeEquivalentTo(expectedTournament);
     }
-    
+
     [Fact]
     public async Task DeleteTournament_ShouldThrowTournamentNotFoundException_WhenTournamentDoesntExist()
     {
@@ -244,7 +236,12 @@ public class TournamentServiceTests
     {
         // Arrange
         var id = Guid.NewGuid();
-        var tournamentEntity = new TournamentEntity() { Id = id , BeginTime = new(new(2022, 9, 27)), EndTime = new(new(2022, 9, 28))};
+        var tournamentEntity = new TournamentEntity()
+        {
+            Id = id,
+            BeginTime = new(DateTime.Now + TimeSpan.FromDays(2)),
+            EndTime = new(DateTime.Now + TimeSpan.FromDays(3))
+        };
         var expectedTournament = new TournamentDTO();
         _repository.GetTournamentByIdAsync(id).Returns(tournamentEntity);
         _mapper.Map<TournamentDTO>(tournamentEntity).Returns(expectedTournament);
@@ -257,11 +254,65 @@ public class TournamentServiceTests
     }
 
     [Fact]
+    public async Task
+        ValidateTournamentToPublish_ShouldThrowTournamentInvalidException_WhenBeginTimeIsInThePast()
+    {    
+        // Arrange
+        var id = Guid.NewGuid();
+        var beginTime = DateTimeOffset.Now - TimeSpan.FromDays(3);
+        var endTime = DateTimeOffset.Now + TimeSpan.FromDays(3);
+        var tournament = new TournamentEntity()
+        {
+            Id = id,
+            BeginTime = beginTime,
+            EndTime = endTime
+        };
+        _repository.GetTournamentByIdAsync(id).Returns(tournament);
+
+        // Act
+        var result = async () => await _sut.ValidateTournamentToPublish(id);
+
+        // Assert
+        await result.Should().ThrowAsync<TournamentInvalidException>()
+            .WithMessage("Tournament's begin time cannot be in the past");
+    }
+
+    [Fact]
+    public async Task
+        ValidateTournamentToPublish_ShouldThrowTournamentInvalidException_WhenEndTimeIsInThePast()
+    {    
+        // Arrange
+        var id = Guid.NewGuid();
+        var beginTime = DateTimeOffset.Now - TimeSpan.FromDays(6);
+        var endTime = DateTimeOffset.Now - TimeSpan.FromDays(3);
+        var tournament = new TournamentEntity()
+        {
+            Id = id,
+            BeginTime = beginTime,
+            EndTime = endTime
+        };
+        _repository.GetTournamentByIdAsync(id).Returns(tournament);
+
+        // Act
+        var result = async () => await _sut.ValidateTournamentToPublish(id);
+
+        // Assert
+        await result.Should().ThrowAsync<TournamentInvalidException>()
+            .WithMessage("Tournament's end time cannot be in the past");
+    }
+    
+    [Fact]
     public async Task PublishTournament_ShouldPublishTournament_WhenTournamentIsValidToPublish()
     {
         // Arrange
         var id = Guid.NewGuid();
-        var tournamentEntity = new TournamentEntity() { Id = id , BeginTime = new(new(2022, 9, 27)), EndTime = new(new(2022, 9, 28)), Status = TournamentStatus.Draft};
+        var tournamentEntity = new TournamentEntity()
+        {
+            Id = id, 
+            BeginTime = new(DateTime.Now + TimeSpan.FromDays(2)),
+            EndTime = new(DateTime.Now + TimeSpan.FromDays(3)),
+            Status = TournamentStatus.Draft
+        };
         var expectedTournament = new TournamentDTO() {Status = TournamentStatus.Publish};
         _repository.GetTournamentByIdAsync(id).Returns(tournamentEntity);
         _mapper.Map<TournamentDTO>(tournamentEntity).Returns(expectedTournament);
@@ -287,24 +338,7 @@ public class TournamentServiceTests
         await result.Should().ThrowAsync<TournamentNotFoundException>()
             .WithMessage($"Tournament with id {id} does not exist.");
     }
-    
-    // [Fact]
-    // public async Task PublishTournament_ShouldThrowsTournamentInvalidException_WhenTournamentIsInvalid()
-    // {
-    //     // Arrange
-    //     var id = Guid.NewGuid();
-    //     var tournament = new TournamentEntity() {Status = TournamentStatus.Publish};
-    //     _repository.GetTournamentByIdAsync(id).Returns(tournament);
-    //     _sut.ValidateTournamentToPublish(id).Returns(Arg.Any<bool>());
-    //
-    //     // Act
-    //     var result = async () => await _sut.PublishTournament(id);
-    //
-    //     // Assert
-    //     await result.Should().ThrowAsync<TournamentNotFoundException>()
-    //         .WithMessage($"Tournament with id {id} does not exist.");
-    // }
-// Arrange
+    // Arrange
 
     // Act
 

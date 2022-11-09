@@ -2,14 +2,14 @@
 using Tournament.API.Controllers.Payloads;
 using Tournament.API.Services.Interfaces;
 
-namespace Tournament.API.Controllers;
+namespace Tournament.API.Controllers.Tournaments;
 
 /// <summary>
 /// Tournament service
 /// </summary>
 [ApiController]
-[Route("api/v{version:apiVersion}/[controller]")]
 [ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
 public class TournamentsController : ControllerBase
 {
     private readonly ITournamentService _service;
@@ -38,14 +38,9 @@ public class TournamentsController : ControllerBase
     /// </summary>
     /// <returns>An IActionResult representing a list of tournaments</returns>
     [HttpGet("get-public")]
-    public async Task<IActionResult> GetPublicTournaments(
-        int? pageIndex, 
-        int? pageSize,
-        int? status,
-        Guid? hostId, 
-        Guid? gameId)
+    public async Task<IActionResult> GetPublicTournaments( [FromQuery] TournamentQueryParameters parameters)
     {
-        var response = await _service.GetTournaments(pageIndex, pageSize, status, hostId, gameId);
+        var response = await _service.GetTournaments(parameters);
         return Ok(response);
     }
 

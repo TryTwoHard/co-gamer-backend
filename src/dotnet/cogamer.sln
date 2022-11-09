@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tournament.API.Tests.Unit.A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "BuildingBlocks\Shared\Shared.csproj", "{AD99273A-FABB-4B6F-B0A7-D5A2C6BD2BCC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tournament.API.Tests.Integration", "Services\Tournament\Tests\Tournament.API.Tests.Integration\Tournament.API.Tests.Integration.csproj", "{A9F8A61E-DCC1-486B-B8EF-17361142BCDB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,7 @@ Global
 		{0609EF40-0B72-4702-9B20-3FFA3882182D} = {72D67493-FD1F-4554-8E8E-A6C5C72E53DF}
 		{642DF5DE-013E-4BDF-8A76-014E919A4E4A} = {0609EF40-0B72-4702-9B20-3FFA3882182D}
 		{AD99273A-FABB-4B6F-B0A7-D5A2C6BD2BCC} = {3556F4FF-9CD0-44B6-AF98-D7BEA5A466DE}
+		{A9F8A61E-DCC1-486B-B8EF-17361142BCDB} = {0609EF40-0B72-4702-9B20-3FFA3882182D}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A35A439B-ECF3-4FB6-A9FE-64D4ED3B7CC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -82,5 +85,9 @@ Global
 		{AD99273A-FABB-4B6F-B0A7-D5A2C6BD2BCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD99273A-FABB-4B6F-B0A7-D5A2C6BD2BCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD99273A-FABB-4B6F-B0A7-D5A2C6BD2BCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9F8A61E-DCC1-486B-B8EF-17361142BCDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9F8A61E-DCC1-486B-B8EF-17361142BCDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9F8A61E-DCC1-486B-B8EF-17361142BCDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9F8A61E-DCC1-486B-B8EF-17361142BCDB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

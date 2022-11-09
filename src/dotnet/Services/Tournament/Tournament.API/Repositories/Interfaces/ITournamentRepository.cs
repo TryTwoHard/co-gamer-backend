@@ -8,7 +8,7 @@ namespace Tournament.API.Repositories.Interfaces;
 
 public interface ITournamentRepository : IRepositoryBase<TournamentEntity, Guid, TournamentContext>
 {
-    Task<IEnumerable<TournamentEntity>> GetTournamentsAsync(ISpecification<TournamentEntity> specification);
+    Task<IQueryable<TournamentEntity>> GetTournamentsAsync();
     Task<TournamentEntity?> GetTournamentByIdAsync(Guid id);
     Task CreateTournamentAsync(TournamentEntity tournament);
     Task UpdateTournamentAsync(TournamentEntity tournament);

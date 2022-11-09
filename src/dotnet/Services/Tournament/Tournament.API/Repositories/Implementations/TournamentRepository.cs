@@ -16,15 +16,7 @@ public class TournamentRepository : RepositoryBase<TournamentEntity, Guid, Tourn
     {
     }
 
-    public async Task<IEnumerable<TournamentEntity>> GetTournamentsAsync(ISpecification<TournamentEntity> specification)
-    {
-        var list = GetAll();
-        foreach (var expression in specification.WhereExpressions)
-        {
-            list = list.Where(expression.Filter);
-        }
-        return await list.ToListAsyncSafe();
-    } 
+    public async Task<IQueryable<TournamentEntity>> GetTournamentsAsync() => GetAll();
 
     public Task<TournamentEntity?> GetTournamentByIdAsync(Guid id) => GetByIdAsync(id);
 

@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
+using Microsoft.OpenApi.Extensions;
 using Tournament.API.Controllers.Payloads;
+using Tournament.API.Controllers.Tournaments;
 using Tournament.API.Exceptions;
+using Tournament.API.Extensions;
+using Tournament.API.Helpers;
 using Tournament.API.Models.DTOs;
 using Tournament.API.Models.Entities;
 using Tournament.API.Models.Statuses;
 using Tournament.API.Repositories.Interfaces;
 using Tournament.API.Services.Interfaces;
-using Tournament.API.Specifications;
 
 namespace Tournament.API.Services.Implementations;
 
@@ -21,25 +24,15 @@ public class TournamentService : ITournamentService
         _mapper = mapper;
     }
 
-    public async Task<Page<TournamentDTO>> GetTournaments(int? pageIndex, int? pageSize, int? status, Guid? hostId, Guid? gameId)
+    public async Task<Page<TournamentDTO>> GetTournaments(TournamentQueryParameters parameters)
     {
-        var response = new Page<TournamentDTO>(pageSize);
-        pageIndex ??= 0;
-        pageSize ??= 0;
-        status ??= 0;
-        // status: -1 - Past,  0 - Current, 1 - Future, 2 - All, default: 0
-        var pagedSpec = new TournamentFilterPaginatedSpecification(
-            skip: pageIndex.Value * pageSize.Value,
-            take: pageSize.Value,
-            status: status,
-            hostId: hostId,
-            gameId: gameId
-        );
-        
-        var list = await _repository.GetTournamentsAsync(pagedSpec);
-        response.Content.AddRange(_mapper.Map<IEnumerable<TournamentDTO>>(list));
+        var tournaments = await _repository.GetTournamentsAsync();
+        tournaments.Paginate(parameters);
 
-        return response;
+        var result = _mapper.Map<List<TournamentDTO>>(tournaments.ToList());
+        var page = new Page<TournamentDTO>(result.Count) { Content = result};
+
+        return page;
     }
 
     public async Task<TournamentDTO?> GetTournamentById(Guid id)
@@ -129,17 +122,17 @@ public class TournamentService : ITournamentService
     {
         var tournament = await _repository.GetTournamentByIdAsync(id);
         var now = DateTimeOffset.UtcNow;
-        if (tournament!.BeginTime <= now)
-        {
-            throw new TournamentInvalidException($"Tournament's already been published!");
-        }
-
+        
         if (tournament!.EndTime <= now)
         {
-            throw new TournamentInvalidException("Tournament's ready ended!");
+            throw new TournamentInvalidException("Tournament's end time cannot be in the past");
         }
         
-
+        if (tournament!.BeginTime <= now)
+        {
+            throw new TournamentInvalidException($"Tournament's begin time cannot be in the past");
+        }
+        
         return _mapper.Map<TournamentDTO>(tournament);
     }
     

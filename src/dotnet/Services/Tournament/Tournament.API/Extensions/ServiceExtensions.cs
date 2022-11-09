@@ -9,6 +9,7 @@ using MySql.Data.MySqlClient;
 using MySql.EntityFrameworkCore.Infrastructure;
 using Shared.Configurations;
 using Tournament.API.Controllers.ErrorsController;
+using Tournament.API.Helpers;
 using Tournament.API.Persistence;
 using Tournament.API.Profiles;
 using Tournament.API.Repositories.Implementations;
@@ -53,7 +54,8 @@ public static class ServiceExtensions
             .AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>))
             .AddScoped<ITournamentRepository, TournamentRepository>()
             .AddScoped<ITournamentService, TournamentService>()
-            .AddTransient<ProblemDetailsFactory, TournamentProblemDetailsFactory>();
+            .AddTransient<ProblemDetailsFactory, TournamentProblemDetailsFactory>()
+            .AddSingleton<IDateTimeProvider, DateTimeProvider>();
     }
 
     private static IServiceCollection ConfigureTournamentDbContext(this IServiceCollection services, IConfiguration configuration)
