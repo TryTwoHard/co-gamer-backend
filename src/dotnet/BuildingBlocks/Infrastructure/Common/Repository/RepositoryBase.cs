@@ -20,8 +20,6 @@ public class RepositoryBase<T, TKey, TContext> : RepositoryQueryBase<T, TKey, TC
         _dbContext = dbContext;
     }
 
-    
-
     public async Task<IDbContextTransaction> BeginTransactionAsync()
         => await _dbContext.Database.BeginTransactionAsync();
 

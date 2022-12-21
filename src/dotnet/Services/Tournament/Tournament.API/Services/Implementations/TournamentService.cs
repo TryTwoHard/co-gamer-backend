@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
-using Microsoft.OpenApi.Extensions;
+using Contracts.Domains.Implementations;
+using Infrastructure.Extensions;
 using Tournament.API.Controllers.Payloads;
 using Tournament.API.Controllers.Tournaments;
 using Tournament.API.Exceptions;
-using Tournament.API.Extensions;
-using Tournament.API.Helpers;
 using Tournament.API.Models.DTOs;
 using Tournament.API.Models.Entities;
 using Tournament.API.Models.Statuses;
@@ -27,7 +26,28 @@ public class TournamentService : ITournamentService
     public async Task<Page<TournamentDTO>> GetTournaments(TournamentQueryParameters parameters)
     {
         var tournaments = await _repository.GetTournamentsAsync();
-        tournaments = tournaments.Paginate(parameters);
+        var paginationOptions = new PaginationOptions {Page = parameters.Page, Size = parameters.Size};
+
+        // Searching
+        if (!string.IsNullOrEmpty(parameters.Name))
+        {
+            tournaments = tournaments.Where(x => x.Name.ToLower().Contains(parameters.Name));
+        }
+
+        // Filtering
+        if (parameters.State != null)
+        {
+            tournaments = parameters.State switch
+            {
+                "On-going" => tournaments.Where(t => t.BeginTime < DateTimeOffset.Now && t.EndTime > DateTimeOffset.Now),
+                "Past" => tournaments.Where(t => t.EndTime < DateTimeOffset.Now),
+                "Future" => tournaments.Where(t => t.BeginTime > DateTimeOffset.Now),
+                _ => tournaments
+            };
+        }
+
+        // Paginating
+        tournaments = tournaments.Paginate(paginationOptions);
 
         var result = _mapper.Map<List<TournamentDTO>>(tournaments.ToList());
         var page = new Page<TournamentDTO>(result.Count) { Content = result};
@@ -97,6 +117,7 @@ public class TournamentService : ITournamentService
         var tournament = await _repository.GetTournamentByIdAsync(id);
         if (tournament is null)
         {
+            
             throw new TournamentNotFoundException($"Tournament with id {id} does not exist.");
         }
 

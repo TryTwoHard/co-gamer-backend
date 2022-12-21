@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-using Ardalis.Specification;
-using Contracts.Common.Interfaces;
+﻿using Contracts.Common.Interfaces;
 using Tournament.API.Models.Entities;
 using Tournament.API.Persistence;
 

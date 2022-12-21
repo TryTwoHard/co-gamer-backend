@@ -2,20 +2,20 @@
 using Contracts.Domains.Implementations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Options;
 
 namespace Contracts.Common.Interfaces;
 
-public interface IRepositoryQueryBase<T, in K> 
-    where T : EntityBase<K>
+public interface IRepositoryQueryBase<T, TKey> 
+    where T : EntityBase<TKey>
 {
     IQueryable<T> GetAll(bool trackChanges = false);
     IQueryable<T> GetAll(bool trackChanges = false, params Expression<Func<T, object>>[] includeProperties);
     IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression, bool trackChanges = false);
     IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression, bool trackChanges = false,
         params Expression<Func<T, object>>[] includeProperties);
-
-    Task<T?> GetByIdAsync(K id);
-    Task<T?> GetByIdAsync(K id, params Expression<Func<T, object>>[] includeProperties);
+    Task<T?> GetByIdAsync(TKey id);
+    Task<T?> GetByIdAsync(TKey id, params Expression<Func<T, object>>[] includeProperties);
 }
 
 public interface IRepositoryQueryBase<T, K, TContext> : IRepositoryQueryBase<T, K> where T : EntityBase<K>

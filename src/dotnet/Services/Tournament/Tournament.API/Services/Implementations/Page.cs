@@ -23,4 +23,4 @@ public class Page<T>
             return Total > 0 ? 1 : 0;
         }
     }
-}
+} 

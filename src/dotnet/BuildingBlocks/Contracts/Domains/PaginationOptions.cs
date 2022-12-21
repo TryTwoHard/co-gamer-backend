@@ -1,27 +1,20 @@
 ﻿namespace Contracts.Domains.Implementations;
 
-public class PaginationObject<T, K> 
-    where T : EntityBase<K>
+public class PaginationOptions
 {
-    private readonly int _pageSize;
-    public PaginationObject(int? pageSize)
-    {
-        _pageSize = pageSize ?? 0;
-    }
+    private int _size = 30;
+    private const int _maxSize = 50;
+    public int Page { get; set; } = 1;
 
-    public List<T> Content { get; set; } = new();
-    public int Total => Content.Count;
-
-    public int PageCount
+    public int Size
     {
         get
         {
-            if (_pageSize > 0)
-            {
-                return (int)Math.Ceiling((decimal)Total / _pageSize);
-            }
-            
-            return Total > 0 ? 1 : 0;
+            return _size;
+        }
+        set
+        {
+            _size = Math.Min(_maxSize, value);
         }
     }
 }

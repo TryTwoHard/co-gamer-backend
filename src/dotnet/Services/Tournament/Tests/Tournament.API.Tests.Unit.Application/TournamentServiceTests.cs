@@ -28,26 +28,26 @@ public class TournamentServiceTests
     }
 
 
-    [Fact]
-    public async Task GetTournaments_ShouldReturnEmptyList_WhenNoTournamentsExist()
-    {
-        // Arrange
-        var tournaments = Enumerable.Empty<TournamentEntity>().AsQueryable();
-        _repository.GetTournamentsAsync().Returns(tournaments);
-        var parameters = new TournamentQueryParameters()
-        {
-
-        };
-        var expected = new List<TournamentDTO>();
-        _mapper.Map<List<TournamentDTO>>(tournaments.ToList()).Returns(expected);
-        var page = new Page<TournamentEntity>(expected.Count) {Content = tournaments.ToList()};
-        
-        // Act
-        var result = await _sut.GetTournaments(parameters);
-
-        // Assert
-        result.Should().BeEquivalentTo(page);
-    }
+    // [Fact]
+    // public async Task GetTournaments_ShouldReturnEmptyList_WhenNoTournamentsExist()
+    // {
+    //     // Arrange
+    //     var tournaments = Enumerable.Empty<TournamentEntity>().AsQueryable();
+    //     _repository.GetTournamentsAsync().Returns(tournaments);
+    //     var parameters = new TournamentQueryParameters()
+    //     {
+    //
+    //     };
+    //     var expected = new List<TournamentDTO>();
+    //     _mapper.Map<List<TournamentDTO>>(tournaments.ToList()).Returns(expected);
+    //     var page = new Page<TournamentEntity>(expected.Count) {Content = tournaments.ToList()};
+    //     
+    //     // Act
+    //     var result = await _sut.GetTournaments(parameters);
+    //
+    //     // Assert
+    //     result.Should().BeEquivalentTo(page);
+    // }
 
     [Fact]
     public async Task GetTournamentById_ShouldReturnTournament_WhenThatTournamentExists()
