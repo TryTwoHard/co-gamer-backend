@@ -27,7 +27,7 @@ public class TournamentService : ITournamentService
     public async Task<Page<TournamentDTO>> GetTournaments(TournamentQueryParameters parameters)
     {
         var tournaments = await _repository.GetTournamentsAsync();
-        tournaments.Paginate(parameters);
+        tournaments = tournaments.Paginate(parameters);
 
         var result = _mapper.Map<List<TournamentDTO>>(tournaments.ToList());
         var page = new Page<TournamentDTO>(result.Count) { Content = result};
